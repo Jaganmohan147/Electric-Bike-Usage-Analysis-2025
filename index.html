@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Electric Bike Usage Analysis 2025</title>
+
+<!-- SheetJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* Main theme styles same as COVID template */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('https://i.pinimg.com/736x/6e/29/43/6e2943e4f3e3c186bbdb16e25a175752.jpg') no-repeat center center/cover;
+  color: white;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+header { background: rgba(0,0,0,0.8); padding: 10px; text-align: center; font-size: 1.5em; font-weight: bold; }
+.container { flex: 1; display: flex; }
+nav { width: 250px; background: rgba(0,0,0,0.85); padding-top: 20px; transition: transform 0.3s ease; }
+nav a { display: block; padding: 12px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+nav a:hover { background: rgba(255,255,255,0.2); }
+main { flex: 1; padding: 20px; background: rgba(0,0,0,0.6); overflow-y: auto; }
+section { display: none; animation: fadeIn 0.5s ease; }
+section.active { display: block; }
+.card { background: rgba(255,255,255,0.15); padding: 20px; margin-bottom: 20px; border-radius: 10px; }
+footer { background: rgba(0,0,0,0.85); text-align: center; padding: 10px; font-size: 0.9em; color: #ccc; }
+.burger { display: none; position: absolute; left: 10px; top: 15px; cursor: pointer; font-size: 24px; }
+@media(max-width: 768px) {
+  nav { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); z-index: 100; }
+  nav.active { transform: translateX(0); }
+  .burger { display: block; }
+  .container { flex-direction: column; }
+}
+@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+/* Graph dashboard styles */
+:root{
+  --glass: rgba(255,255,255,0.08);
+  --accent: #00ff88;
+  --muted: #dfeef0;
+  --card-radius: 12px;
+}
+.graph-header{
+  background: linear-gradient(90deg, rgba(0,0,0,0.35), rgba(0,0,0,0.45));
+  padding:14px 18px; display:flex; align-items:center; gap:12px;
+}
+.logo { width:44px; height:44px; border-radius:8px; background:linear-gradient(135deg,var(--accent),#0abf7a); display:flex;align-items:center;justify-content:center;font-weight:700;color:#02110a; }
+h1{font-size:18px;margin:0;letter-spacing:0.2px}
+.top-actions { margin-left:auto; display:flex; gap:10px; align-items:center; }
+.btn { background:var(--accent); color:#04110a; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.btn.ghost { background: transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.06); }
+.graph-main { padding:18px; display:grid; grid-template-columns: 300px 1fr; gap:18px; }
+.sidebar { background: var(--glass); padding:14px; border-radius: var(--card-radius); }
+.sidebar h3{margin:0 0 8px 0;font-size:14px;color:var(--muted)}
+select, input[type="date"] { width:100%; padding:8px; border-radius:8px; background: rgba(10,10,10,0.3); color:var(--muted); font-size:13px; }
+.content { display:flex; flex-direction:column; gap:18px; }
+.graph-card { background: rgba(255,255,255,0.05); border-radius: var(--card-radius); padding:14px; }
+.charts-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:14px; }
+.full { grid-column: 1 / -1; }
+canvas { background: transparent; border-radius:8px; }
+
+/* Ensure charts have height */
+.chart-wrap { height: 320px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="burger" onclick="toggleMenu()">☰</span>
+  Electric Bike Usage Analysis 2025
+</header>
+
+<div class="container">
+  <nav id="sidebar">
+    <a href="#" onclick="showSection('abstract')">Abstract</a>
+    <a href="#" onclick="showSection('introduction')">Introduction</a>
+    <a href="#" onclick="showSection('technology')">Technology</a>
+    <a href="#" onclick="showSection('existing')">Existing System</a>
+    <a href="#" onclick="showSection('proposed')">Proposed System</a>
+    <a href="#" onclick="showSection('analysis')">Analysis</a>
+    <a href="#" onclick="showSection('team')">Team Members</a>
+  </nav>
+
+  <main>
+    <section id="abstract" class="active">
+      <div class="card"><h2>Abstract</h2>
+        <p>The increasing demand for sustainable transportation has made electric bikes (e-bikes) a preferred option worldwide. This project “Electric Bike Usage Analysis 2025” aims to analyze the usage patterns, adoption trends, and performance of electric bikes. The project is implemented using HTML and CSS to create a visually interactive web interface that presents analytical data, charts, and statistics in a simple and user-friendly manner. This system will provide valuable insights into how e-bikes contribute to green mobility, cost-effectiveness, and environmental protection.</p>
+      </div>
+    </section>
+
+    <section id="introduction">
+      <div class="card"><h2>Introduction</h2>
+        <p>In recent years, urbanization and environmental concerns have increased the need for eco-friendly transport alternatives. Electric bikes are gaining popularity because they are cost-effective, energy-efficient, and reduce carbon emissions.
+This project focuses on analyzing various aspects of e-bike usage such as mileage, battery efficiency, distance coverage, and adoption rates. Using HTML and CSS, a responsive web-based platform is developed to display this analysis in an easy-to-understand format.</p>
+      </div>
+    </section>
+
+    <section id="technology">
+      <div class="card"><h2>Technology</h2>
+        <p>Frontend: HTML5, CSS3, JavaScript.
+
+Responsive Design: Media Queries and Flexbox for mobile compatibility.
+
+Navigation: Right-side navigation with burger menu.
+
+Content Presentation: Use of glossy and professional styles for text and sections.</p>
+      </div>
+    </section>
+
+    <section id="existing">
+      <div class="card"><h2>Existing System</h2>
+        <p>The existing systems for e-bike analysis are limited and often require advanced tools or software. Some reports are generated manually or through heavy analytics platforms, which are complex for students and beginners.
+Limitations of existing systems include:
+
+Lack of interactive web interfaces.
+
+Complex data representation without visualization.
+
+Limited accessibility for common users.</p>
+      </div>
+    </section>
+
+    <section id="proposed">
+      <div class="card"><h2>Proposed System</h2>
+        <p>TThe proposed system is a web-based analysis tool built using HTML and CSS. It provides an easy-to-navigate interface with a responsive design that works on both desktop and mobile.
+Key features include:
+
+User-friendly navigation (header, footer, sidebar, burger menu).
+
+Background visuals related to e-bikes for a modern look.
+
+Sections like Abstract, Introduction, Existing System, Proposed System, Technology, Future Scope, Advantages, Limitations, Bibliography, and References.
+
+Iframe integration to display analytical reports.</p>
+      </div>
+    </section>
+
+    <section id="analysis">
+      <div class="graph-header">
+        <div class="brand">
+          <div class="logo">EB</div>
+          <div>
+            <h1>Electric Bike Usage — Automatic Graphs</h1>
+            <div class="small">Upload Excel → Visualize charts</div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn" id="demoBtn">Load Demo Data</button>
+          <label class="btn ghost" for="fileInput">Choose Excel file</label>
+          <input id="fileInput" type="file" accept=".xlsx,.xls" style="display:none">
+        </div>
+      </div>
+
+      <div class="graph-main">
+        <aside class="sidebar">
+          <h3>Controls</h3>
+          <label>Select Region</label>
+          <select id="regionSelect"><option value="__all__">All regions</option></select>
+          <label style="margin-top:8px;">Date range</label>
+          <input type="date" id="startDate">
+          <input type="date" id="endDate" style="margin-top:8px;">
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn" id="applyBtn">Apply</button>
+            <button class="btn ghost" id="resetBtn">Reset</button>
+          </div>
+        </aside>
+
+        <section class="content">
+          <div class="graph-card">
+            <strong>Dataset summary:</strong>
+            <span id="summaryText">No dataset loaded</span>
+          </div>
+          <div class="graph-card charts-grid">
+            <div class="chart-wrap"><canvas id="ridesChart"></canvas></div>
+            <div class="chart-wrap"><canvas id="batteryChart"></canvas></div>
+            <div class="full chart-wrap"><canvas id="peakHoursChart"></canvas></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="team">
+      <div class="card"><h2>Team Members</h2>
+        <ul>
+          <li>Peketi Dhanush - Y237258044</li>
+  <li>Veeranki Sravan Kumar - Y237258057</li>
+  <li>Shabbir Ahmad - Y237258050</li>
+  <li>Shaik Gowse Mohiddin - Y237258051</li>
+  <li>Tirumalasetty Jayaraju - Y237258054</li>
+  <li>Vusala Rajesh - Y237258058</li>
+  <li>Vuyuru Tejaswini Phani Kumar - Y237258059</li>
+  <li>Siramsetty Varshitha - Y237258052</li>
+  <li>Tummu Katyani - Y237258055</li>        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>Designed by Data Analytics Team — 2025</footer>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (window.innerWidth <= 768) toggleMenu();
+}
+function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+
+/* ---------------- Demo dataset ---------------- */
+const demoData = [
+  { date: '2025-01-01', region: 'North', rides: 120, battery: 85, peakHour: 8 },
+  { date: '2025-01-02', region: 'North', rides: 150, battery: 82, peakHour: 9 },
+  { date: '2025-01-03', region: 'North', rides: 140, battery: 84, peakHour: 9 },
+  { date: '2025-01-01', region: 'South', rides: 90,  battery: 88, peakHour: 7 },
+  { date: '2025-01-02', region: 'South', rides: 100, battery: 87, peakHour: 8 },
+  { date: '2025-01-03', region: 'South', rides: 110, battery: 86, peakHour: 8 },
+];
+
+let currentData = [];     // raw full dataset
+let charts = { rides:null, battery:null, peak:null };
+
+/* ---------- Helpers ---------- */
+const toDate = (d) => new Date(d);
+const fmtDate = (d) => new Date(d).toISOString().slice(0,10);
+
+function setDateBounds(data){
+  if(!data.length){ startDate.value = ""; endDate.value = ""; return; }
+  const dates = data.map(d => toDate(d.date));
+  const min = new Date(Math.min.apply(null, dates));
+  const max = new Date(Math.max.apply(null, dates));
+  startDate.value = fmtDate(min);
+  endDate.value   = fmtDate(max);
+  startDate.min = fmtDate(min);
+  startDate.max = fmtDate(max);
+  endDate.min   = fmtDate(min);
+  endDate.max   = fmtDate(max);
+}
+
+function populateRegions(data){
+  const sel = document.getElementById('regionSelect');
+  const regions = Array.from(new Set(data.map(d => d.region))).sort();
+  sel.innerHTML = `<option value="__all__">All regions</option>` + regions.map(r => `<option>${r}</option>`).join('');
+}
+
+function getFilters(){
+  const region = document.getElementById('regionSelect').value;
+  const s = document.getElementById('startDate').value;
+  const e = document.getElementById('endDate').value;
+  const start = s ? new Date(s) : null;
+  const end = e ? new Date(e) : null;
+  return { region, start, end };
+}
+
+function filterData(){
+  const { region, start, end } = getFilters();
+  return currentData.filter(row => {
+    const inRegion = region === "__all__" ? true : row.region === region;
+    const d = new Date(row.date);
+    const inStart = start ? d >= start : true;
+    const inEnd   = end   ? d <= end   : true;
+    return inRegion && inStart && inEnd;
+  });
+}
+
+function groupByDate(data, valueKey, reducer='sum'){
+  const map = {};
+  data.forEach(r => {
+    const key = r.date;
+    const val = Number(r[valueKey]) || 0;
+    if(!(key in map)) map[key] = { sum:0, count:0 };
+    map[key].sum += val;
+    map[key].count += 1;
+  });
+  const labels = Object.keys(map).sort();
+  const values = labels.map(k => reducer === 'avg' ? +(map[k].sum / map[k].count).toFixed(2) : map[k].sum);
+  return { labels, values };
+}
+
+function groupByPeakHour(data){
+  const map = {};
+  data.forEach(r => {
+    const h = String(r.peakHour);
+    map[h] = (map[h] || 0) + (Number(r.rides) || 0);
+  });
+  const labels = Object.keys(map).sort((a,b)=>Number(a)-Number(b)).map(h=>`${h}:00`);
+  const values = Object.keys(map).sort((a,b)=>Number(a)-Number(b)).map(h=>map[h]);
+  return { labels, values };
+}
+
+function chartOptions(hasAxes=true){
+  const base = { plugins:{ legend:{ labels:{ color:'white' } }, tooltip:{ enabled:true } }, maintainAspectRatio:false, responsive:true };
+  if(!hasAxes) return base;
+  base.scales = {
+    x: { ticks:{ color:'white' }, grid:{ color:'rgba(255,255,255,0.2)' } },
+    y: { ticks:{ color:'white' }, grid:{ color:'rgba(255,255,255,0.2)' }, beginAtZero:true }
+  };
+  return base;
+}
+
+function destroyCharts(){
+  Object.keys(charts).forEach(k => { if(charts[k]) { charts[k].destroy(); charts[k]=null; } });
+}
+
+/* ---------- Rendering ---------- */
+function updateSummary(filtered){
+  if(!filtered.length){
+    summaryText.textContent = "No data in the selected filters.";
+    return;
+  }
+  const regions = new Set(filtered.map(d=>d.region));
+  const dates = filtered.map(d=>new Date(d.date));
+  const min = new Date(Math.min.apply(null, dates));
+  const max = new Date(Math.max.apply(null, dates));
+  summaryText.textContent = `Records: ${filtered.length} | Regions: ${regions.size} | Range: ${fmtDate(min)} → ${fmtDate(max)}`;
+}
+
+function renderCharts(){
+  const filtered = filterData();
+  updateSummary(filtered);
+  destroyCharts();
+
+  // Rides over time (sum per date)
+  const ridesAgg = groupByDate(filtered, 'rides', 'sum');
+  charts.rides = new Chart(document.getElementById('ridesChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: ridesAgg.labels, datasets: [{ label:'Rides', data: ridesAgg.values, borderColor:'lime', backgroundColor:'rgba(0,255,0,0.15)', fill:true, tension:0.25 }] },
+    options: chartOptions(true)
+  });
+
+  // Battery efficiency over time (average per date)
+  const battAgg = groupByDate(filtered, 'battery', 'avg');
+  charts.battery = new Chart(document.getElementById('batteryChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: battAgg.labels, datasets: [{ label:'Battery Efficiency % (avg)', data: battAgg.values, backgroundColor:'cyan', borderColor:'cyan' }] },
+    options: chartOptions(true)
+  });
+
+  // Peak hours distribution (rides summed by hour)
+  const peakAgg = groupByPeakHour(filtered);
+  charts.peak = new Chart(document.getElementById('peakHoursChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: peakAgg.labels, datasets: [{ data: peakAgg.values }] },
+    options: chartOptions(false)
+  });
+}
+
+/* ---------- Events & Data Loading ---------- */
+const regionSelect = document.getElementById('regionSelect');
+const startDate = document.getElementById('startDate');
+const endDate   = document.getElementById('endDate');
+const applyBtn  = document.getElementById('applyBtn');
+const resetBtn  = document.getElementById('resetBtn');
+const summaryText = document.getElementById('summaryText');
+
+document.getElementById('demoBtn').addEventListener('click', () => {
+  currentData = demoData.slice();
+  populateRegions(currentData);
+  setDateBounds(currentData);
+  renderCharts();
+});
+
+regionSelect.addEventListener('change', renderCharts);
+applyBtn.addEventListener('click', renderCharts);
+startDate.addEventListener('change', ()=>{ /* optional live */ });
+endDate.addEventListener('change', ()=>{ /* optional live */ });
+
+resetBtn.addEventListener('click', () => {
+  regionSelect.value="__all__";
+  setDateBounds(currentData);
+  renderCharts();
+});
+
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    const wb = XLSX.read(new Uint8Array(evt.target.result), { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    let rows = XLSX.utils.sheet_to_json(sheet);
+
+    // Make column names case-insensitive: expect date, region, rides, battery, peakHour
+    rows = rows.map(r => {
+      const obj = {};
+      for(const k in r){ obj[k.toString().toLowerCase()] = r[k]; }
+      return {
+        date: obj.date || obj['Date'] || obj['DATE'],
+        region: obj.region,
+        rides: Number(obj.rides) || 0,
+        battery: Number(obj.battery) || 0,
+        peakHour: Number(obj.peakhour) || 0
+      };
+    }).filter(r => r.date && r.region);
+
+    currentData = rows;
+    populateRegions(currentData);
+    setDateBounds(currentData);
+    renderCharts();
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+/* Optional: auto-load demo so you see charts immediately */
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('demoBtn').click();
+});
+</script>
+</body>
+</html>
